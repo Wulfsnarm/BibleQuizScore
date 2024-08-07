@@ -238,6 +238,7 @@ function judgment(result){
 		scoresheet.push([0,0,false,"",[],[],[],[],null,[]]);
 	}
 	
+	//score totals are calculated in fill_score_sheet
 	//RPoint
 	//scoresheet[curr_quest][0] = scoresheet[curr_quest-1][0] + (((current_buzzed[0] == "red") ? 1 : 0 ) * (1 - 1.5 * result) * point);
 	
@@ -261,6 +262,7 @@ function judgment(result){
 		// question is completed
 		scoresheet[curr_quest][8] = true;
 		curr_quest += 1;
+		highlight_curr_quest();
 	}
 	
 	fill_score_sheet();
@@ -306,37 +308,30 @@ function init_settings(){
 	
 	var settings = localStorage.getItem('settings').split(",");
 	
+	//set division based on storage
 	for (x = 0; x < document.getElementById("division").children.length; x ++){
-		if (parseInt(settings[2]) == x)
-			document.getElementById("division").children[x].selected = true;
-		else
-			document.getElementById("division").children[x].selected = false;
+		(parseInt(settings[2]) == x) ? document.getElementById("division").children[x].selected = true : document.getElementById("division").children[x].selected = false;
 	}
 	
 	build_score_sheet();
 	
+	//set red team names based on storage
 	for (x = 0; x < document.getElementById("redTeam").children.length; x ++){
-		if (parseInt(settings[0]) == x)
-			document.getElementById("redTeam").children[x].selected = true;
-		else
-			document.getElementById("redTeam").children[x].selected = false;
+		(parseInt(settings[0]) == x) ? document.getElementById("redTeam").children[x].selected = true : document.getElementById("redTeam").children[x].selected = false;
 	}
 	
 	selectTeam("red");
 	
+	//set yellow team names based on storage
 	for (x = 0; x < document.getElementById("yellowTeam").children.length; x ++){
-		if (parseInt(settings[1]) == x)
-			document.getElementById("yellowTeam").children[x].selected = true;
-		else
-			document.getElementById("yellowTeam").children[x].selected = false;
+		(parseInt(settings[1]) == x) ? document.getElementById("yellowTeam").children[x].selected = true : document.getElementById("yellowTeam").children[x].selected = false;
 	}
 	
 	selectTeam("yellow");
 	
-	if (parseInt(settings[3]))
-		document.getElementById("tenpoint").checked = true;
-	else
-		document.getElementById("tenpoint").checked = false;
+	//set red team ten point bonus based on storage
+	(parseInt(settings[3])) ? document.getElementById("tenpointRed").checked = true : document.getElementById("tenpointRed").checked = false;
+	(parseInt(settings[4])) ? document.getElementById("tenpointYellow").checked = true : document.getElementById("tenpointYellow").checked = false;
 	
 	set_tenpoint();
 }
@@ -349,9 +344,11 @@ function set_settings(){
 	
 	var division = $("select[id='division'] option:selected").index();
 	
-	var tenpoint = document.getElementById("tenpoint").checked === true ? 1 : 0;
+	var tenpointRed = document.getElementById("tenpointRed").checked === true ? 1 : 0;
 	
-	localStorage.setItem('settings', redTeam + "," + yellowTeam + "," + division + "," + tenpoint);
+	var tenpointYellow = document.getElementById("tenpointYellow").checked === true ? 1 : 0;
+	
+	localStorage.setItem('settings', redTeam + "," + yellowTeam + "," + division + "," + tenpointRed + "," + tenpointYellow);
 	
 	//loadTeam();
 	
@@ -364,6 +361,32 @@ function set_settings(){
 	selectTeam('yellow');
 	
 	set_division();
+}
+
+function set_tenpoint(){ //sets if each team starts with 10 pts or not
+	//set red tenpoint
+	scoresheet[0][0] = ((document.getElementById("tenpointRed").checked) ? 10 : 0);
+	//set yellow tenpoint
+	scoresheet[0][1] = ((document.getElementById("tenpointYellow").checked) ? 10 : 0);
+	
+	fill_score_sheet();
+}
+
+function set_division(){ //sets the division of competition (junior, senior)
+	switch($("#division option:selected").text().toLowerCase()){
+		case "beginner":
+			data = JSON.parse(beginner);
+		break;
+		case "junior":
+			data = JSON.parse(junior);
+		break;
+		case "intermediate":
+			data = JSON.parse(intermediate);
+		break;
+		default:
+			data = JSON.parse(experienced);
+		break;
+	}
 }
 
 function select_quizzer(color, quizzer){
@@ -451,7 +474,7 @@ function fill_score_sheet() {
 		row[0].innerHTML = "<div style='position:relative; width: 100%; height: 100%'>" + scoresheet[i][0] + "<span class='lower-right-corner'> </span></div>";
 		
 		//recalculate and write Yellow Score
-		scoresheet[i][1] = scoresheet[i-1][1] + (((scoresheet[i][3][0] == "R" || scoresheet[i][4].some(e => /(R)/g.test(e))) ? 1 : 0 ) * (1 - 1.5 * ((scoresheet[i][3][0] == "R") ? 0 : 1)) * pointValue);
+		scoresheet[i][1] = scoresheet[i-1][1] + (((scoresheet[i][3][0] == "Y" || scoresheet[i][4].some(e => /(Y)/g.test(e))) ? 1 : 0 ) * (1 - 1.5 * ((scoresheet[i][3][0] == "Y") ? 0 : 1)) * pointValue);
 		
 		row[12].innerHTML = "<div style='position:relative; width: 100%; height: 100%'>" + scoresheet[i][1] + "<span class='lower-left-corner'> </span></div>";;
 		
@@ -519,6 +542,11 @@ function fill_score_sheet() {
 		
 		//write fouls
 	}
+}
+
+function highlight_curr_quest() {
+	$('table-primary').removeClass('table-primary');
+	document.getElementById("q"+curr_quest).classList.add("table-primary");
 }
 
 //////////// BUILD SCORE SHEET ///////////////////////
@@ -748,39 +776,6 @@ function build_score_area() {
 	
 	//console.log(red_score + yellow_score);
 };
-
-function set_tenpoint(){ //sets if each team starts with 10 pts or not
-	if (document.getElementById("tenpoint").checked){
-		//RPoint
-		scoresheet[0][0] = 10;
-		//YPoint
-		scoresheet[0][1] = 10;
-	}else{
-		//RPoint
-		scoresheet[0][0] = 0;
-		//YPoint
-		scoresheet[0][1] = 0;
-	}
-	
-	fill_score_sheet();
-}
-
-function set_division(){ //sets the division of competition (junior, senior)
-	switch($("#division option:selected").text().toLowerCase()){
-		case "beginner":
-			data = JSON.parse(beginner);
-		break;
-		case "junior":
-			data = JSON.parse(junior);
-		break;
-		case "intermediate":
-			data = JSON.parse(intermediate);
-		break;
-		default:
-			data = JSON.parse(experienced);
-		break;
-	}
-}
 
 function contest(color){
 	document.getElementById("modal").style.display = "block";
@@ -1045,6 +1040,8 @@ $(document).ready(function(){
 	init_settings();
 	
 	set_division();
+
+	highlight_curr_quest();
 	
 	window.onclick = function(event) {
 		if (event.target == document.getElementById("modal")) {
