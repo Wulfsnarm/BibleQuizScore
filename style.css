@@ -1,0 +1,439 @@
+body{
+	background-color: lightgray;
+	overflow-x: hidden;
+}
+
+.grid-container {
+	display: grid;
+	grid-template-columns: 30vw auto;
+	grid-template-rows: 7vh 60vh auto;
+}
+
+.grid-item {
+	padding: 5px;
+	font-size: 30px;
+	text-align: center;
+}
+
+.top-bar{
+	grid-row-start: 1;
+	grid-row-end: 2;
+	grid-column-start: 1;
+	grid-column-end: span 2;
+	background-color: black;
+	z-index: 2;
+}
+
+.red-score{
+	color: red;
+}
+
+.red-stat{
+    color: red;
+    font-size: 75%;
+    padding-top: 10px;
+}
+
+.timer{
+	color: green;
+}
+
+.yellow-stat{
+    color: yellow;
+    font-size: 75%;
+    padding-top: 10px;
+}
+
+.yellow-score{
+	color: yellow;
+}
+
+.quizzers {
+	grid-row-start: 2;
+	grid-row-end: 3;
+    height: 100%;
+}
+
+.team-row{
+	padding: 5px;
+}
+
+.coach-row{
+	padding: 0px 5px 0px 5px; 
+}
+
+.coach-button{
+	margin: 0px 10px 0px 10px;
+}
+
+.coach-info {
+	width:auto;
+	font-size: .6em;
+	margin: 0px 5px 0px 5px;
+}
+
+#answer {
+	display: none;
+}
+
+.red-answer {
+	grid-row-start: 2;
+	grid-row-end: 3;
+    height: 100%;
+    background: pink;
+    border: 5px solid red;
+}
+
+.yellow-answer {
+	grid-row-start: 2;
+	grid-row-end: 3;
+    height: 100%;
+    background: palegoldenrod;
+    border: 5px solid yellow;
+}
+
+.red-answer-header{
+	font-size: 110%;
+	background-color: #af0000;
+}
+
+.yellow-answer-header{
+	font-size: 110%;
+	background-color: #ffc107;
+}
+
+.answer-record{
+	background-color: white;
+}
+
+.answer-button{
+	font-size: 90% !important;
+	margin: 5px 0px;
+}
+
+.lookup {
+	grid-row-start: 3;
+	grid-row-end: 4;
+	height: 100%;
+	padding-bottom: 0px !important;
+}
+
+.search-box{
+	margin: 0 0 5px 0;
+	height: 5vh;
+}
+
+.results-box{
+	margin: 0;
+	height: 24vh;
+}
+
+.results{
+	background-color:white;
+	border: 5px solid gray;
+	text-align: left;
+	padding: 0px 10px;
+	font-size: .5em;
+	overflow-y: scroll;
+	height: 100%
+}
+
+pre {
+	white-space: pre-wrap;       /* css-3 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.highlight{
+	background-color: yellow;
+}
+
+.score {
+	grid-row-start: 2;
+	grid-row-end: 4;
+	overflow-y: scroll;
+    height: 90vh;
+}
+
+.table-score{
+	font-size: 3vh;
+	background-color: white;
+}
+
+td{
+	border: 1px solid black;
+	padding: 1px;
+	height: 3vw;
+}
+
+th{
+	border: 1px solid black;
+	padding: 5px;
+}
+
+.gray-out{
+	background-color: silver;
+}
+
+.total-cell{
+	border: 1px solid black;
+	padding: 5px;
+}
+
+.lower-right-corner{
+	position:absolute;
+	right: 0;
+	bottom: 0;
+	font-size: .75em;
+}
+
+.lower-left-corner{
+	position:absolute;
+	left: 0;
+	bottom: 0;
+	font-size: .75em;
+}
+
+.upper-right-corner{
+	position:absolute;
+	right: 0;
+	top: 0;
+	font-size: .75em;
+}
+
+.upper-left-corner{
+	position:absolute;
+	left: 0;
+	top: 0;
+	font-size: .75em;
+}
+
+.player-score{
+	width: 5%;
+}
+
+.point{
+	width: 10%;
+}
+
+.game-info{
+	width: 25%;
+}
+
+.vertical{
+	writing-mode:tb-rl;
+}
+
+#red-team{
+	background: pink;
+	border: 5px solid red;
+	height: 50%
+}
+
+#yellow-team{
+	background: palegoldenrod;
+	border: 5px solid yellow;
+	height: 50%
+}
+
+p {
+	margin: 0;
+}
+
+/* Side bar settings */
+.sidepanel  {
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  
+  z-index:3;
+}
+
+.sidepanel a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+  background-color: #111;
+}
+
+.sidepanel button {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+  background-color: #111;
+}
+
+.sidepanel a:hover {
+  color: #f1f1f1;
+}
+
+.sidepanel .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+}
+
+.openbtn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #111;
+  color: white;
+  padding: 2px 15px;
+  border: none;
+  border-radius: 0;
+  height: 100%
+}
+
+.openbtn:hover {
+  background-color:#444;
+}
+
+.accordion-body{
+	font-size: 1.25em;
+}
+
+.accordion-title{
+	font-size: 1.5em;
+	width: 70%;
+}
+
+.btn-add{
+	width:20%;
+	padding: 5px !important;
+}
+
+.division {
+	font-size: 1em;
+}
+
+.team-add {
+	padding-left: 30px;
+	display: none;
+}
+
+.remove-team {
+	width:auto;
+}
+
+.score-cell{
+	width: 100%;
+    height: 100%;
+    position: relative;
+    border: black 1px;
+}
+
+.interruption {
+	font-size: .5em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: fit-content;
+    block-size: fit-content;
+}
+
+.question-count {
+	font-size: .5em;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: fit-content;
+    block-size: fit-content;
+}
+
+.substitution {
+	font-size: .5em;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: fit-content;
+    block-size: fit-content;
+}
+
+.foul {
+	font-size: .5em;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: fit-content;
+    block-size: fit-content;
+}
+
+.question-result {
+	font-size: 1.7vw;
+    vertical-align: bottom;
+    height: 100%;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-inner-contest{
+    display: grid;
+    grid-template-columns: repeat(3, 33% [col-start]);
+    grid-template-rows: repeat(2, 50% [row-start]);
+    justify-content: center;
+    justify-items: center;
+}
+
+.modal-inner-foul{
+    display: grid;
+    grid-template-columns: repeat(6, 16.67% [col-start]);
+    grid-template-rows: repeat(1, 100% [row-start]);
+    justify-content: center;
+    justify-items: center;
+}
+
+tbody > tr:hover {
+	background-color: #cccccc
+}

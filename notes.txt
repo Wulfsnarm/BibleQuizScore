@@ -1,0 +1,57 @@
+Bible quiz score settings
+
+Teams
+	add new teams
+	see current teams
+	
+game settings
+	division/material
+	start with 10 points
+	
+	
+Buttons over scoresheet
+NR button
+question types
+	
+
+Things to do:
+contest button
+	contest menu
+foul button
+	foul menu
+clickable table row
+	table menu
+	question correction modal
+print view
+juniors quiz out at 6 questions
+edit teams
+split up 10 point start to team (red and yellow individual)
+extra 10 pts for quiz out (individ and total)
+ribbon status modal at end of quiz?
+question types
+highlight current question row
+update question counts
+No response button
+
+	
+	
+	
+	
+Layout
+
+Laptop
+	all panels visible
+Tablet 
+	scorekeeping and lookup visible
+	scoresheet hidden
+		menu bar at bottom?
+		pulled out from right side?
+Phone
+	one panel visible at a time
+	panels
+		scoring
+		lookup
+		scoresheet
+		settings
+		
+		

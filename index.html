@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bible Quizzing Scoresheet</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+	<script type="text/javascript" src="beginner.json"></script>
+	<script type="text/javascript" src="junior.json"></script>
+	<script type="text/javascript" src="intermediate.json"></script>
+	<script type="text/javascript" src="experienced.json"></script>
+	<script src="scoreKeeper.js"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div id="side-panel" class="sidepanel">
+		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+		<div class="accordion accordion-flush" id="accordionExample">
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+						Team Settings
+					</button>
+				</h2>
+				<div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						<div class="row">
+							<span class="accordion-title">
+								Teams
+							</span>
+							<button class="btn-add btn" onClick="document.getElementsByClassName('team-add')[0].style.display = 'block';">+</button>
+						</div>
+						<div class="team-add">
+							<input type="text" class="form-control" id="teamName" name="teamadd" placeholder="Team Name" value="West Point FPC Experienced">
+							<input type="text" class="form-control" id="quizzer1" name="teamadd" placeholder="Quizzer 1" value="Amaris Marshall">
+							<input type="text" class="form-control" id="quizzer2" name="teamadd" placeholder="Quizzer 2" value="Sunny Coleman">
+							<input type="text" class="form-control" id="quizzer3" name="teamadd" placeholder="Quizzer 3">
+							<input type="text" class="form-control" id="quizzer4" name="teamadd" placeholder="Quizzer 4">
+							<input type="text" class="form-control" id="quizzer5" name="teamadd" placeholder="Quizzer 5">
+							<button class="btn" onClick="saveTeam();">Save Team</button>
+						</div>
+						<label for="redTeam">Red Team</label>
+						<select class="form-select redTeam" id="redTeam" onchange="set_settings()">
+							<option>Generic Team</option>
+						</select>
+						<label for="yellowTeam">Yellow Team</label>
+						<select class="form-select yellowTeam" id="yellowTeam" onchange="set_settings()">
+							<option>Generic Team</option>
+						</select>
+						<label for="teamRemoval">Remove Team</label>
+						<div style="display:flex">
+							<select class="form-select remove-team" id="teamRemoval">
+							</select>
+							<button class="btn-add btn" onClick="removeTeam();">-</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+						Quiz Settings
+					</button>
+				</h2>
+				<div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						Division
+						<select class="form-select division" name="division" id="division" onchange="set_settings();">
+							<option>Beginner</option>
+							<option>Junior</option>
+							<option>Intermediate</option>
+							<option>Experienced</option>
+						</select>
+						<input type="checkbox" id="tenpoint" name="tenpoint" value="10" onchange="set_settings()">
+						<label for="tenpoint"> 10 Points to Start</label>
+					</div>
+				</div>
+			</div>
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+						Save/Re-Open Quiz
+					</button>
+				</h2>
+				<div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						<button class="btn">Save to PDF</button>
+						<label for="reOpen">Re-Open Past Quiz</label>
+						<select class="form-select reOpen" id="reOpen">
+							<option></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+						Contact Us
+					</button>
+				</h2>
+				<div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					<div class="accordion-body">
+						Have comments or suggestions?
+						
+						Email us at name@email.com!
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- The Modal -->
+	<div id="modal" class="modal">
+	  <!-- Modal content -->
+		<div class="modal-content">
+			<span class="close" onclick='document.getElementById("modal").style.display = "none"'>&times;</span>
+			<div id="modal_content">Some text in the Modal..</div>
+		</div>
+	</div>
+	<div class="grid-container">
+		<div class="row grid-item top-bar">
+			<button class="openbtn btn col-1" onclick="openNav()">☰</button>
+			<div class="col-1 red-score" id="redScoreBar">20</div>
+			<div class="col-1 red-stat" id="redTOBar">TO 0/2</div>
+			<div class="col-2 red-stat" id="redContestBar">Contest W 0/2 | D 0/2</div>
+			<div class="col-2 timer" id="timer">--</div>
+			<div class="offset-1 col-2 yellow-stat" id="yellowContestBar">Contest W 0/2 | D 0/2</div>
+			<div class="col-1 yellow-stat" id="yellowTOBar">TO 0/2</div>
+			<div class="col-1 yellow-score" id="yellowScoreBar">30</div>
+		</div>
+		<div class="grid-item quizzers" id="quizzers">
+			<!-- see build_score_area(); -->
+		</div>
+		<div class="grid-item answer" id="answer">
+			<!-- see buzzed(); -->
+		</div>
+		<div class="grid-item lookup">
+			<div class="search-box row">
+				<input class="form-control" id="search_field">
+			</div>
+			<div class="results-box row">
+				<pre class="results" id="results_box">
+					
+				</pre>
+			</div>
+		</div>
+		<div class="grid-item score">
+			<table class="table-score table" id="table-score">
+			</table>
+		</div>
+	</div>
+</body>
+</html>
