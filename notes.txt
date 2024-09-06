@@ -23,13 +23,11 @@ clickable table row
 	table menu
 	question correction modal
 print view
-juniors quiz out at 6 questions
 edit teams
 extra 10 pts for quiz out (individ and total)
 	include this in code for totaling only
 ribbon status modal at end of quiz?
 question types
-highlight current question row
 update question counts
 No response button
 

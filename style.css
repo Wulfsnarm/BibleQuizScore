@@ -356,6 +356,15 @@ p {
     block-size: fit-content;
 }
 
+.quizzer-foul {
+	font-size: .5em;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: fit-content;
+    block-size: fit-content;
+}
+
 .substitution {
 	font-size: .5em;
     position: absolute;

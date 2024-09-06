@@ -29,7 +29,7 @@ var timervar;
 //			];
 
 var current_buzzed = [];
-var scoresheet = [["","","","","","","","","",""]];
+var scoresheet = [["","","","",[],[],[],[[]],"",[[]]], ["","","","",[],[],[],[[]],"",[[]]]];
 var curr_quest = 1;
 var quiz_out;
 
@@ -90,12 +90,12 @@ function loadTeam() {
 function removeTeam(){
 	teams_json = JSON.parse(localStorage.getItem("teamsList"));
 	
-	console.log(teams_json);
+	//console.log(teams_json);
 	delete teams_json[document.getElementById('teamRemoval').value];
 	
 	localStorage.setItem("teamsList", teams_json);
 	
-	console.log(teams_json);
+	//console.log(teams_json);
 	
 	loadTeam();
 }
@@ -143,9 +143,9 @@ function selectTeam(color){
 }
 
 function timeOut(color){
-	console.log("time out " + color);
+	//console.log("time out " + color);
 	var to_count = parseInt(document.getElementById(color+"TOBar").innerHTML.split(" ")[1].split("/")[0]);
-	console.log(to_count);
+	//console.log(to_count);
 	document.getElementById(color+"TOBar").innerHTML = "TO " + (to_count + 1) + "/2";
 	if (to_count + 1 >= 2){
 		document.getElementById(color+"TO").disabled = true;
@@ -265,13 +265,13 @@ function judgment(result){
 		highlight_curr_quest();
 	}
 	
-	fill_score_sheet();
-	
 	run_timer(0);
 	
 	document.getElementById("quizzers").style.display = "block";
 	document.getElementById("answer").style.display = "none";
 	document.getElementById("timer").innerHTML = "--";
+	
+	fill_score_sheet();
 }
 
 function run_timer(time_span){
@@ -396,13 +396,13 @@ function select_quizzer(color, quizzer){
 	//create array of quzzers who are at the table
 	var quizzers_selected = [$("#"+color+"quizzer1 option:selected").index(), $("#"+color+"quizzer2 option:selected").index(), $("#"+color+"quizzer3 option:selected").index()];
 	
-	console.log(quizzers_selected);
+	//console.log(quizzers_selected);
 	
 	for (var x = 0; x < 3; x ++){
 		if (x != quizzer-1){
-			console.log("not changed");
+			//console.log("not changed");
 			if (quizzers_selected[x] == set_quizzer){
-				console.log("change");
+				//console.log("change");
 				do {
 					var new_index = Math.floor(Math.random() * 4);
 				} while (quizzers_selected.includes(new_index));
@@ -444,7 +444,7 @@ function select_quizzer(color, quizzer){
 		for (var x = 0; x < 6; x ++){
 			if (check_lineup[x] != lineup[x]){
 				scoresheet[curr_quest - 1][9].push([((x < 3)? "R" : "Y") + (check_lineup[x] + 1), ((x < 3)? "R" : "Y") + (lineup[x] + 1)]);
-				console.log("#" + ((x < 3)?"R":"Y") + (x%3+1) + "buzzer");
+				//console.log("#" + ((x < 3)?"R":"Y") + (x%3+1) + "buzzer");
 				$("#" + ((x < 3)?"R":"Y") + (x%3+1) + "buzzer").attr("onclick", "buzzed(" + ((x < 3)?"'red'":"'yellow'") + "," + (check_lineup[x]+1) + ")");
 			}
 		}
@@ -461,7 +461,10 @@ function fill_score_sheet() {
 	red_CE = [[0,0],[0,0],[0,0],[0,0],[0,0]];
 	yellow_CE = [[0,0],[0,0],[0,0],[0,0],[0,0]];
 	
-	for (var i = 1; i < scoresheet.length; i++) {
+	for (var i = 1; i <= curr_quest; i++) {
+ 		if (typeof scoresheet[i] == "undefined"){
+			scoresheet.push([0,0,false,"",[],[],[],[],null,[]]);
+		}
 		var pointValue = 10
 		if (i > 8) pointValue = pointValue + 10;
 		if (i > 17) pointValue = pointValue + 10;
@@ -469,17 +472,59 @@ function fill_score_sheet() {
 		row = document.getElementById("q" + String(i)).children;
 		
 		//recalculate and write Red Score
-		scoresheet[i][0] = scoresheet[i-1][0] + (((scoresheet[i][3][0] == "R" || scoresheet[i][4].some(e => /(R)/g.test(e))) ? 1 : 0 ) * (1 - 1.5 * ((scoresheet[i][3][0] == "R") ? 0 : 1)) * pointValue);
-		
+		scoresheet[i][0] = scoresheet[i-1][0] +
+			(
+				(
+					(scoresheet[i][3] !== undefined) && (scoresheet[i][3][0] == "R") 
+					|| 
+					(
+						(scoresheet[i][4] !== undefined) && (scoresheet[i][4].some(e => /(R)/g.test(e)))
+					) 
+					? 1 
+					: 0 
+				) * 
+				(1 - 1.5 * 
+					(
+						(
+							(scoresheet[i][3] !== undefined) && (scoresheet[i][3][0] ) == "R"
+						)
+						? 0 
+						: 1
+					)
+				) * pointValue
+			);
+
 		row[0].innerHTML = "<div style='position:relative; width: 100%; height: 100%'>" + scoresheet[i][0] + "<span class='lower-right-corner'> </span></div>";
 		
 		//recalculate and write Yellow Score
-		scoresheet[i][1] = scoresheet[i-1][1] + (((scoresheet[i][3][0] == "Y" || scoresheet[i][4].some(e => /(Y)/g.test(e))) ? 1 : 0 ) * (1 - 1.5 * ((scoresheet[i][3][0] == "Y") ? 0 : 1)) * pointValue);
+		scoresheet[i][1] = scoresheet[i-1][1] +
+			(
+				(
+					(
+						(scoresheet[i][3] !== undefined) && (scoresheet[i][3][0] == "Y") 
+					)
+					|| 
+					(
+						(scoresheet[i][4] !== undefined) && (scoresheet[i][4].some(e => /(Y)/g.test(e)))
+					) 
+					? 1 
+					: 0 
+				) * 
+			(1 - 1.5 * 
+				(
+					(
+						(scoresheet[i][3] !== undefined) && (scoresheet[i][3][0] ) == "Y"
+					) 
+					? 0 
+					: 1
+				)
+			) * pointValue
+		);
 		
 		row[12].innerHTML = "<div style='position:relative; width: 100%; height: 100%'>" + scoresheet[i][1] + "<span class='lower-left-corner'> </span></div>";;
 		
 		// record incorrects first to appropriate CE counter
-		for (var b = 0; b < scoresheet[i][4].length; b++){
+		for (var b = 0; b < (scoresheet[i][4] !== undefined)? scoresheet[i][4].length: 0; b++){
 			if (scoresheet[i][4][b][0] == "R"){
 				red_CE[scoresheet[i][4][b][1]][1] += 1
 			} else {
@@ -488,7 +533,7 @@ function fill_score_sheet() {
 		}
 		
 		//write correct to appropriate CE counter
-		if (scoresheet[i][3] != ""){
+		if (scoresheet[i][3] != "" && scoresheet[i][3] !== undefined){
 			if (scoresheet[i][3][0] == "R"){
 				red_CE[scoresheet[i][3][1]][0] += 1
 			} else {
@@ -499,27 +544,29 @@ function fill_score_sheet() {
 		interruption = scoresheet[i][2];
 		
 		//write incorrects first then corrects
-		if (scoresheet[i][4].length > 0){
+		if (scoresheet[i][4] !== undefined && scoresheet[i][4].length > 0){
 			quizzer_index = parseInt(scoresheet[i][4][0][1]);
 			quizzer_color = scoresheet[i][4][0][0];
 			row[parseInt(quizzer_index) + 1 + ((quizzer_color == "R") ? 0 : 6)].innerHTML = "<div class='score-cell'> " + ((interruption) ? "<p class='interruption'> I </p>" : "") + "<p class='question-result'>" + String(pointValue/2 * -1) + "</p> <p class='question-count'>" + ((quizzer_color == "R") ? red_CE[quizzer_index][1] : yellow_CE[quizzer_index][1]) + "</p> </div>";
-			if (scoresheet[i][3] != ""){
+			if (scoresheet[i][3] != "" && scoresheet[i][3] !== undefined){
 				quizzer_index = parseInt(scoresheet[i][3][1]);
 				quizzer_color = scoresheet[i][3][0];
 				row[parseInt(quizzer_index) + 1 + ((quizzer_color == "R") ? 0 : 6)].innerHTML = "<div class='score-cell'> " + "<p class='question-result'>" + String(pointValue) + "</p> <p class='question-count'>" + ((quizzer_color == "R") ? red_CE[quizzer_index][0] : yellow_CE[quizzer_index][0]) + "</p> </div>";
-			} else if (scoresheet[i][4].length > 1){
+			} else if (scoresheet[i][4].length > 1 && scoresheet[i][4] !== undefined){
 				quizzer_index = parseInt(scoresheet[i][4][0][1]);
 				quizzer_color = scoresheet[i][4][0][0];
 				row[parseInt(quizzer_index) + 1 + ((quizzer_color == "R") ? 0 : 6)].innerHTML = "<div class='score-cell'> " + "<p class='question-result'>" + String(pointValue/2 * -1) + "</p> <p class='question-count'>" + ((quizzer_color == "R") ? red_CE[quizzer_index][1] : yellow_CE[quizzer_index][1]) + "</p> </div>";
 			}
 		} else {
-			quizzer_index = parseInt(scoresheet[i][3][1]);
-			quizzer_color = scoresheet[i][3][0];
-			row[parseInt(quizzer_index) + 1 + ((quizzer_color == "R") ? 0 : 6)].innerHTML = "<div class='score-cell'> " + ((interruption) ? "<p class='interruption'> I </p>" : "") + "<p class='question-result'>" + String(pointValue) + "</p> <p class='question-count'>" + ((quizzer_color == "R") ? red_CE[quizzer_index][0] : yellow_CE[quizzer_index][0]) + "</p> </div>";
+			if (scoresheet[i][3] !== undefined && scoresheet[i][3].length > 0){
+				quizzer_index = parseInt(scoresheet[i][3][1]);
+				quizzer_color = scoresheet[i][3][0];
+				row[parseInt(quizzer_index) + 1 + ((quizzer_color == "R") ? 0 : 6)].innerHTML = "<div class='score-cell'> " + ((interruption) ? "<p class='interruption'> I </p>" : "") + "<p class='question-result'>" + String(pointValue) + "</p> <p class='question-count'>" + ((quizzer_color == "R") ? red_CE[quizzer_index][0] : yellow_CE[quizzer_index][0]) + "</p> </div>";
+			}
 		}
 		
 		//write contests 
-		for (var x = 0; x < scoresheet[i][7].length; x ++){
+		for (var x = 0; x < (scoresheet[i][7] !== undefined) ? scoresheet[i][7].length : 0; x ++){
 			switch(scoresheet[i][7][x][0]){
 				case "R":
 					row[0].children[0].children[0].innerHTML = "C" + scoresheet[i][7][x][1];
@@ -531,21 +578,33 @@ function fill_score_sheet() {
 		}
 		
 		//write substitutions
-		for (var x = 0; x < scoresheet[i][9].length; x++){
-			//sub out
-			row[parseInt(scoresheet[i][9][x][1][1]) + 1 + ((scoresheet[i][9][x][1][0] == "R") ? 0 : 5)].children[0].innerHTML += 
-			"<p class='substitution'>sub out</p>";
-			//sub in
-			row[parseInt(scoresheet[i][9][x][0][1]) + 1 + ((scoresheet[i][9][x][0][0] == "R") ? 0 : 5)].children[0].innerHTML += 
-			"<p class='substitution'>sub in</p>";
+		for (var x = 0; x < (scoresheet[i][9] !== undefined) ? scoresheet[i][9].length : 0; x++){
+			if (scoresheet[i][9][x].length > 0){
+				//sub out
+				row[parseInt(scoresheet[i][9][x][1][1]) + 1 + ((scoresheet[i][9][x][1][0] == "R") ? 0 : 5)].children[0].innerHTML += "<p class='substitution'>sub out</p>";
+				//sub in
+				row[parseInt(scoresheet[i][9][x][0][1]) + 1 + ((scoresheet[i][9][x][0][0] == "R") ? 0 : 5)].children[0].innerHTML += "<p class='substitution'>sub in</p>";
+			}
 		}
 		
 		//write fouls
+		for (var x = 0; x < ((scoresheet[i][5] !== undefined) ? scoresheet[i][5].length : 0); x++){
+			console.log(x);
+			if (scoresheet[i][5][x].length > 0){
+				console.log("exists");
+				if (scoresheet[i][5][x].length > 1){
+					console.log("length");
+					row[parseInt(scoresheet[i][5][x][1]) + ((scoresheet[i][5][x][0] == "R") ? 0 : 6)].children[0].innerHTML += "<p class='quizzer-foul'>F</p>";
+				} else {
+					row[(scoresheet[i][5][x][0] == 'R') ? 0 : 12].children[0].children[0].innerHTML = "F " + row[(scoresheet[i][5][x][0] == 'R') ? 0 : 12].children[0].children[0].innerHTML;
+				}
+			}
+		}
 	}
 }
 
 function highlight_curr_quest() {
-	$('table-primary').removeClass('table-primary');
+	$('.table-primary').removeClass('table-primary');
 	document.getElementById("q"+curr_quest).classList.add("table-primary");
 }
 
@@ -576,7 +635,7 @@ function build_score_sheet() {
 	
 	//console.log("num questions: " + quest_count);
 	for (var x = 1; x <= quest_count; x++){
-		console.log(x);
+		//console.log(x);
 		score_sheet_html += "<tr id='q" + x + "'>\n";
 		score_sheet_html += "<td class='point td-score'>\n";
 		score_sheet_html += "<div style='width: 100%;height: 100%;position: relative;'>\n";
@@ -815,56 +874,25 @@ function contest_result(color, state){
 	//state = withdraw, deny, grant
 	switch(state) {
 		case "withdraw":
-			switch(color){
-				case "red":
-					// write to scoresheet var
-					scoresheet[curr_quest - 1][7].push(["R", "W"]);
-					// calc withdraw counter
-					contests[0][0] += 1;
-					break;
-				case "yellow":
-					// write to scoresheet var
-					scoresheet[curr_quest - 1][7].push(["Y", "W"]);
-					// calc withdraw counter
-					contests[1][0] += 1;
-					break;
-				default:
-					alert("result error");
-			}
+			// write to scoresheet var
+			scoresheet[curr_quest - 1][7].push([color.substring(0,1).toUpperCase(), "W"]);
+			// calc withdraw counter
+			contests[((color == "red") ? 0 : 1)][0] += 1;
+			document.getElementById(color+"Contest").disabled = true;
 			break;
 		case "deny":
-			switch(color){
-				case "red":
-					// write to scoresheet var
-					scoresheet[curr_quest - 1][7].push(["R", "D"]);
-					// calc deny counter
-					contests[0][1] += 1;
-					break;
-				case "yellow":
-					// write to scoresheet var
-					scoresheet[curr_quest - 1][7].push(["Y", "D"]);
-					// calc deny counter
-					contests[1][1] += 1;
-					break;
-				default:
-					alert(error);
-			}
+			// write to scoresheet var
+			scoresheet[curr_quest - 1][7].push([color.substring(0,1).toUpperCase(), "D"]);
+			// calc deny counter
+			contests[((color == "red") ? 0 : 1)][1] += 1;
+			document.getElementById(color+"Contest").disabled = true;
 			break;
 		default:
 			// show question correction
-			switch(color){
-				case "red":
-					// write to scoresheet var
-					scoresheet[curr_quest - 1][7].push(["R", "G"]);
-					break;
-				case "yellow":
-					// write to scoresheet var
-					scoresheet[curr_quest - 1][7].push(["Y", "G"]);
-					break;
-				default:
-					alert(error);
-			}
 			question_edit(curr_quest - 1);
+			// write to scoresheet var
+			scoresheet[curr_quest - 1][7].push([color.substring(0,1).toUpperCase(), "G"]);
+			break;
 	}
 	
 	document.getElementById("modal").style.display = "none";
@@ -890,15 +918,28 @@ function foul(color){
 	
 	document.getElementById("modal_content").classList.add("modal-inner-foul");
 	
-	document.getElementById("modal_content").innerHTML = "";
-	
+	foul_html  = '	<label for="foulSelect">Who Fouled?</label>';
+	foul_html += '	<select name="foulSelect" id="foulSelect">';
+	foul_html += '		<option value="' + lineup[(color == "red" ? 0 : 3) + 0] + '">' + document.getElementById(color + 'quizzer1').options[document.getElementById(color + 'quizzer1').selectedIndex].text + '</option>';
+	foul_html += '		<option value="' + lineup[(color == "red" ? 0 : 3) + 1] + '">' + document.getElementById(color + 'quizzer1').options[document.getElementById(color + 'quizzer2').selectedIndex].text + '</option>';
+	foul_html += '		<option value="' + lineup[(color == "red" ? 0 : 3) + 2] + '">' + document.getElementById(color + 'quizzer1').options[document.getElementById(color + 'quizzer3').selectedIndex].text + '</option>';
+    foul_html += '		<option value="5" selected>' + color.charAt(0).toUpperCase() + color.slice(1) + ' Team</option>';
+	foul_html += '	</select>';
+	foul_html += '	<button onclick="foul_result(document.getElementById(\'foulSelect\').value,\'' + color + '\')">Foul</button>';
+
+	document.getElementById("modal_content").innerHTML = foul_html;
 }
 
 function foul_result(entity, color){
-	//state = withdraw, deny, grant
+	//entity = 0,1,2,3,4,5; corresponds to order in dropdown and 5 for team
+	//color = red, yellow
 	document.getElementById("modal").style.display = "none";
 	
-	document.getElementById("modal_content").classlist.remove("modal-inner-contest");
+	document.getElementById("modal_content").classList.remove("modal-inner-foul");
+
+	scoresheet[curr_quest][5].push(color.substring(0,1).toUpperCase() + ((entity != 5) ? parseInt(entity)+1 : ""));
+	
+	fill_score_sheet();
 }
 
 function question_edit(){
@@ -943,9 +984,9 @@ function search(){
 									var search_chap = search.slice(search.search(/[0-9]/), search.search(/\./));
 									var search_vers = search.slice(search.search(/\./) + 1, search.length);
 									
-									console.log("Book " + book);
-									console.log("Chap " + search_chap);
-									console.log("Vers " + search_vers);
+									//console.log("Book " + book);
+									//console.log("Chap " + search_chap);
+									//console.log("Vers " + search_vers);
 									
 									if (book.search(RegExp("("+search_book.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')+")", "gi")) >= 0 && chapter == search_chap && verse == search_vers){
 										match = true;
@@ -958,8 +999,8 @@ function search(){
 									var search_book = search.slice(search.search(/[A-z]/), search.search(/[0-9]/));
 									var search_chap = search.slice(search.search(/[0-9]/), search.length);
 									
-									console.log("Book " + book);
-									console.log("Chap " + search_chap);
+									//console.log("Book " + book);
+									//console.log("Chap " + search_chap);
 									
 									if (book.search(RegExp("("+search_book.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')+")", "gi")) >= 0 && chapter == search_chap){
 										match = true;
@@ -1047,7 +1088,7 @@ $(document).ready(function(){
 		if (event.target == document.getElementById("modal")) {
 			document.getElementById("modal").style.display = "none";
 		}
-		console.log(event.target.parentElement.parentElement);
+		//console.log(event.target.parentElement.parentElement);
 	}
 	
 	//////////// TEXT SEARCH FUNCTION ////////////////////
