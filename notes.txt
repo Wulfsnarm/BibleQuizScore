@@ -1,3 +1,16 @@
+//score row [ 0 - RPoint = int,
+//			  1 - YPoint = int,
+//			  2 - interruption = bool, 
+//			  3 - correct = R1, 
+//			  4 - incorrect = [R1, Y1], 
+//			  5 - foul = [R1, R, Y2, Y], 
+//			  6 - TO = [R, Y], 
+//			  7 - Contest = [[R, W], [Y, G]], 
+//			  8 - complete = bool,
+//			  9 - substitution = [[R4 (comes in), R1(goes out)],[Y4 (comes in), Y1(goes out)]]
+//			];
+
+
 Bible quiz score settings
 
 Teams
@@ -17,8 +30,7 @@ question types
 Things to do:
 contest button
 	contest menu
-foul button
-	foul menu
+	reset or edit on granted
 clickable table row
 	table menu
 	question correction modal

@@ -262,6 +262,8 @@ function judgment(result){
 		// question is completed
 		scoresheet[curr_quest][8] = true;
 		curr_quest += 1;
+		//document.getElementById("redContest").disabled = false;
+		//document.getElementById("yellowContest").disabled = false;
 		highlight_curr_quest();
 	}
 	
@@ -443,7 +445,7 @@ function select_quizzer(color, quizzer){
 		
 		for (var x = 0; x < 6; x ++){
 			if (check_lineup[x] != lineup[x]){
-				scoresheet[curr_quest - 1][9].push([((x < 3)? "R" : "Y") + (check_lineup[x] + 1), ((x < 3)? "R" : "Y") + (lineup[x] + 1)]);
+				scoresheet[curr_quest][9].push([((x < 3)? "R" : "Y") + (check_lineup[x] + 1), ((x < 3)? "R" : "Y") + (lineup[x] + 1)]);
 				//console.log("#" + ((x < 3)?"R":"Y") + (x%3+1) + "buzzer");
 				$("#" + ((x < 3)?"R":"Y") + (x%3+1) + "buzzer").attr("onclick", "buzzed(" + ((x < 3)?"'red'":"'yellow'") + "," + (check_lineup[x]+1) + ")");
 			}
@@ -473,11 +475,17 @@ function fill_score_sheet() {
 		
 		//recalculate and write Red Score
 		scoresheet[i][0] = scoresheet[i-1][0] +
+		//calc value for any questions
 			(
+				//if correct math is 1 * (1 - (1.5 * 0)) * pointValue = pointValue
+				//if incorrect math is 1 * (1 - 1.5 * 1) * pointValue = .5 * pointValue
+				//if no action from red math is 0 * (1 - 1.5 * 1) * pointValue = 0
 				(
-					(scoresheet[i][3] !== undefined) && (scoresheet[i][3][0] == "R") 
+					(//check for correct questions
+						(scoresheet[i][3] !== undefined) && (scoresheet[i][3][0] == "R")
+					) 
 					|| 
-					(
+					(//check for incorrect correct questions
 						(scoresheet[i][4] !== undefined) && (scoresheet[i][4].some(e => /(R)/g.test(e)))
 					) 
 					? 1 
@@ -485,13 +493,22 @@ function fill_score_sheet() {
 				) * 
 				(1 - 1.5 * 
 					(
-						(
+						(// check for correct question
 							(scoresheet[i][3] !== undefined) && (scoresheet[i][3][0] ) == "R"
 						)
 						? 0 
 						: 1
 					)
 				) * pointValue
+			) + 
+			(
+				(
+					(// check that there are fouls
+						(scoresheet[i][5] !== undefined)
+					)
+					? scoresheet[i][5].filter(function(currentItem) { return currentItem.toUpperCase().indexOf("R") !== -1; }).length
+					: 0
+				) * -5
 			);
 
 		row[0].innerHTML = "<div style='position:relative; width: 100%; height: 100%'>" + scoresheet[i][0] + "<span class='lower-right-corner'> </span></div>";
@@ -519,6 +536,15 @@ function fill_score_sheet() {
 					: 1
 				)
 			) * pointValue
+		) + 
+		(
+			(
+				(// check that there are fouls
+					(scoresheet[i][5] !== undefined)
+				)
+				? scoresheet[i][5].filter(function(currentItem) { return currentItem.toUpperCase().indexOf("Y") !== -1; }).length
+				: 0
+			) * -5
 		);
 		
 		row[12].innerHTML = "<div style='position:relative; width: 100%; height: 100%'>" + scoresheet[i][1] + "<span class='lower-left-corner'> </span></div>";;
@@ -878,14 +904,14 @@ function contest_result(color, state){
 			scoresheet[curr_quest - 1][7].push([color.substring(0,1).toUpperCase(), "W"]);
 			// calc withdraw counter
 			contests[((color == "red") ? 0 : 1)][0] += 1;
-			document.getElementById(color+"Contest").disabled = true;
+			//document.getElementById(color+"Contest").disabled = true;
 			break;
 		case "deny":
 			// write to scoresheet var
 			scoresheet[curr_quest - 1][7].push([color.substring(0,1).toUpperCase(), "D"]);
 			// calc deny counter
 			contests[((color == "red") ? 0 : 1)][1] += 1;
-			document.getElementById(color+"Contest").disabled = true;
+			//document.getElementById(color+"Contest").disabled = true;
 			break;
 		default:
 			// show question correction
@@ -898,6 +924,7 @@ function contest_result(color, state){
 	document.getElementById("modal").style.display = "none";
 	
 	document.getElementById("modal_content").classList.remove("modal-inner-contest");
+	run_timer(0);
 	
 	document.getElementById("redContestBar").innerHTML = "Contest W " + contests[0][0] + "/2 | D " + contests[0][1] + "/2";
 	document.getElementById("yellowContestBar").innerHTML = "Contest W " + contests[1][0] + "/2 | D " + contests[1][1] + "/2";
@@ -943,7 +970,18 @@ function foul_result(entity, color){
 }
 
 function question_edit(){
+	document.getElementById("modal").style.display = "block";
 	
+	document.getElementById("modal_content").classList.add("modal-inner-question");
+
+	var teamList = JSON.parse(localStorage.getItem('teamsList'));
+	for (var x = 1; x < 6; x++){
+		r_list = r_list + '<option>' + teamList[document.getElementById("redTeam").value][x] + '</option>';
+		y_list = y_list + '<option>' + teamList[document.getElementById("yellowTeam").value][x] + '</option>';
+	}
+
+	modal_html  = '';
+
 }
 
 //////////// TEXT SEARCH FUNCTION ////////////////////
