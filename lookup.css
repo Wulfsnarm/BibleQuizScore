@@ -1,0 +1,152 @@
+html, body{
+	background-color: lightgray;
+	overflow-x: hidden;
+	font-size: 1em;
+    height: 100%;
+    margin: 0%;
+}
+
+.lookup {
+    margin: 2%;
+	grid-row-start: 3;
+	grid-row-end: 4;
+	height: 100%;
+	padding-bottom: 0px !important;
+}
+
+.search-box{
+	margin: 0 0 5px 0;
+	/*height: 5vh;*/
+}
+
+.search-colors{
+	margin: 0 0 5px 0;
+    font-size: .75em;
+	/*height: 5vh;*/
+}
+
+.results-box{
+	margin: 0;
+    flex: 1;
+    overflow-y: auto;
+    height: 100%
+	/*height: 75vh;*/
+}
+
+.results{
+	background-color:white;
+	border: 5px solid gray;
+	text-align: left;
+	padding: 0px 10px;
+	overflow-y: scroll;
+	height: 100%;
+    margin: 0;
+}
+
+pre {
+	white-space: pre-wrap;       /* css-3 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.highlight{
+	background-color: yellow;
+}
+
+/* Side bar settings */
+.sidepanel  {
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    
+    z-index:3;
+}
+  
+.sidepanel a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    background-color: #111;
+}
+  
+.sidepanel button {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    background-color: #111;
+}
+  
+.sidepanel a:hover {
+    color: #f1f1f1;
+}
+  
+.sidepanel .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+}
+  
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 2px 15px;
+    border: none;
+    border-radius: 0;
+    height: 100%;
+    width: auto;
+}
+  
+.openbtn:hover {
+    background-color:#444;
+}
+  
+.accordion-body{
+    font-size: 1.25em;
+}
+  
+.accordion-title{
+    font-size: 1.5em;
+    width: 70%;
+}
+  
+.btn-add{
+    width:20%;
+    padding: 5px !important;
+}
+  
+.division {
+    font-size: 1em;
+}
+  
+.team-add {
+    padding-left: 30px;
+    display: none;
+}
+  
+.remove-team {
+    width:auto;
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 90%;
+}

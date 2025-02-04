@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bible Quizzing Scoresheet</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+	<script type="text/javascript" src="beginner_study.json"></script>
+	<script type="text/javascript" src="junior_study.json"></script>
+	<script type="text/javascript" src="intermediate_study.json"></script>
+	<script type="text/javascript" src="experienced_study.json"></script>
+	<script src="lookup.js"></script>
+	<link rel="stylesheet" href="lookup.css">
+</head>
+<body>	
+    <div id="side-panel" class="sidepanel">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <div class="accordion accordion-flush" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Quiz Settings
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        Division
+                        <select class="form-select division" name="division" id="division" onchange="set_settings();">
+                            <option>Beginner</option>
+                            <option>Junior</option>
+                            <option>Intermediate</option>
+                            <option>Experienced</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        Contact Us
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        Have comments or suggestions?
+                        
+                        Email us at name@email.com!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box lookup">
+        <div class="search-box row header">
+            <button class="openbtn btn col-sm-1" onclick="openNav()">☰</button>
+            <div class="col-sm-11">
+                <input class="form-control col-sm-10" id="search_field">
+            </div>
+        </div>
+        <div class="search-colors row form-group">
+            <div class="checkbox col-sm-2">
+                <label><input type="checkbox" id="otw" name="search-options" value="true" onchange="searchOptions()" checked>One Time Words</label>
+            </div>
+            <div class="checkbox col-sm-2">
+                <label><input type="checkbox" id="ttw" name="search-options" value="true" onchange="searchOptions()" checked>Two Time Words</label>
+            </div>
+            <div class="checkbox col-sm-2">
+                <label><input type="checkbox" id="rtw" name="search-options" value="true" onchange="searchOptions()" checked>Three Time Words</label>
+            </div>
+        </div>
+        <div class="results-box row">
+            <pre class="results" id="results_box"></pre>
+        </div>
+    </div>
+</body>
