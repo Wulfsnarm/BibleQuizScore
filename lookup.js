@@ -20,16 +20,20 @@ function search(){
             }
         }
     }
-		
+	
+
 	for (var x = 0; x < search_string.length; x++){
 		for (book in data){
 			for (chapter in data[book]){
 				for (verse in data[book][chapter]){
-					txt = data[book][chapter][verse];
+					var txt = data[book][chapter][verse];
 					var match = true;
 					var book_match = false;
 					var chap_match = false;
 					var vers_match = false;
+                    console.log("search_string:");
+                    console.log(search_string);
+                    console.log("x: " + x);
 					var search_terms = search_string[x].split(" ");
 					
 					//console.log(search_terms.length);
@@ -86,7 +90,7 @@ function search(){
 						var highlight = "";
 						
 						if (match)	{		
-							highlight = txt;
+							highlight_arr = txt.split(/[<>]+/);
 						
 							//console.log("highlighting");
 							
@@ -105,12 +109,21 @@ function search(){
 									regex_string = regex_string + "|("+search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')+")";
 							}
 							
-							var regex = new RegExp(regex_string, "gi"); 
+							var regex = new RegExp(regex_string, "gi");
 							
-							//console.log(regex);
-							highlight = highlight.replace(regex, function (matched) {
-										return "<span class='highlight'>"+matched+"</span>";
-									});
+							console.log(regex);
+                            
+                            highlight = "";
+                            for (h = 0; h < highlight_arr.length; h++){
+                                if (!highlight_arr[h].includes("span")){
+                                    highlight = highlight + highlight_arr[h].replace(regex, function (matched) {
+                                        return "<span class='highlight'>"+matched+"</span>";
+                                    });
+                                }else{
+                                    highlight = highlight + "<" + highlight_arr[h] + ">"
+                                }
+                            }
+
 							//console.log(highlight);
 							
 							if (!book_match && !chap_match && !vers_match){
@@ -129,6 +142,7 @@ function search(){
 		}
 	}
 	$("#results_box").html(result_string);
+    searchOptions();
 }
 
 function init_settings(){	
@@ -175,6 +189,9 @@ function set_division(){ //sets the division of competition (junior, senior)
 			data = JSON.parse(experienced);
 		break;
 	}
+
+    console.log("set_division");
+    search();
 }
 
 function openNav() {
@@ -230,8 +247,6 @@ $(document).ready(function(){
 	set_division();
 
     search();
-    
-    searchOptions();
 
 	//////////// TEXT SEARCH FUNCTION ////////////////////
 	$("#search_field").keyup(function(){search();});
