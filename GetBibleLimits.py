@@ -1,5 +1,8 @@
 import json
 
+# Builds out the bibleLimits.json file from the kjv_bibl.json file 
+# Builds json group as {"book_name": [book_number, chap1_len, chap2_len, ...]...}
+
 # JSON file
 in_file = open ('kjv_bible.json', "r")
 
