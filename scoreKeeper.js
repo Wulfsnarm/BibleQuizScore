@@ -356,7 +356,7 @@ function set_settings(){
 	
 	set_tenpoint();
 	
-	build_score_sheet()
+	build_score_sheet();
 	
 	selectTeam('red');
 	
@@ -627,6 +627,12 @@ function fill_score_sheet() {
 			}
 		}
 	}
+
+	document.getElementById('redScoreBar').innerHTML = scoresheet[scoresheet.length-1][0];
+	document.getElementById('yellowScoreBar').innerHTML = scoresheet[scoresheet.length-1][1];
+
+	build_score_area();
+
 }
 
 function highlight_curr_quest() {
@@ -772,7 +778,7 @@ function build_score_sheet() {
 };
 	
 //////////// BUILD SCORE AREA ////////////////////////
-function build_score_area() {
+function build_score_area(init = false) {
 	var red_score = "<div id='red-team'>";
 	
 	for (var x = 1; x <= 3; x++){
@@ -860,6 +866,11 @@ function build_score_area() {
 	document.getElementById("quizzers").innerHTML = red_score + yellow_score;
 	
 	//console.log(red_score + yellow_score);
+
+	if(!init){
+		selectTeam('red');
+		selectTeam('yellow');
+	}
 };
 
 function contest(color){
@@ -990,7 +1001,7 @@ function search(){
 	
 	var search_string = document.getElementById("search_field").value;
 	
-	search_string = search_string.replaceAll(", ", ",");
+	search_string = search_string.replaceAll(/(\s*,\s*)+/g, ",");
 	
 	search_string = search_string.split(","); 
 	
@@ -1114,7 +1125,7 @@ $(document).ready(function(){
 	
 	console.log("settings configured");
 	
-	build_score_area();
+	build_score_area(true);
 	
 	init_settings();
 	

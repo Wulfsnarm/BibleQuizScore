@@ -1,10 +1,81 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Sheets API Quickstart</title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <title>Bible Quizzing Checkin</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+	<script type="text/javascript" src="beginner_study.json"></script>
+	<script type="text/javascript" src="junior_study.json"></script>
+	<script type="text/javascript" src="intermediate_study.json"></script>
+	<script type="text/javascript" src="experienced_study.json"></script>
+	<script src="lookup.js"></script>
+	<link rel="stylesheet" href="lookup.css">
   </head>
   <body>
+    <style>
+        .checkbox-wrapper-40 {
+            --borderColor: #48c;
+            --borderWidth: .125em;
+        }
+        
+        .checkbox-wrapper-40 label {
+            display: block;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .checkbox-wrapper-40 input[type=checkbox] {
+            -webkit-appearance: none;
+            appearance: none;
+            vertical-align: middle;
+            background: #fff;
+            font-size: 1.8em;
+            border-radius: 0.125em;
+            display: inline-block;
+            border: var(--borderWidth) solid var(--borderColor);
+            width: 1em;
+            height: 1em;
+            position: relative;
+        }
+        .checkbox-wrapper-40 input[type=checkbox]:before,
+        .checkbox-wrapper-40 input[type=checkbox]:after {
+            content: "";
+            position: absolute;
+            background: var(--borderColor);
+            width: calc(var(--borderWidth) * 3);
+            height: var(--borderWidth);
+            top: 50%;
+            left: 10%;
+            transform-origin: left center;
+        }
+        .checkbox-wrapper-40 input[type=checkbox]:before {
+            transform: rotate(45deg) translate(calc(var(--borderWidth) / -2), calc(var(--borderWidth) / -2)) scaleX(0);
+            transition: transform 200ms ease-in 200ms;
+        }
+        .checkbox-wrapper-40 input[type=checkbox]:after {
+            width: calc(var(--borderWidth) * 5);
+            transform: rotate(-45deg) translateY(calc(var(--borderWidth) * 2)) scaleX(0);
+            transform-origin: left center;
+            transition: transform 200ms ease-in;
+        }
+        .checkbox-wrapper-40 input[type=checkbox]:checked:before {
+            transform: rotate(45deg) translate(calc(var(--borderWidth) / -2), calc(var(--borderWidth) / -2)) scaleX(1);
+            transition: transform 200ms ease-in;
+        }
+        .checkbox-wrapper-40 input[type=checkbox]:checked:after {
+            width: calc(var(--borderWidth) * 5);
+            transform: rotate(-45deg) translateY(calc(var(--borderWidth) * 2)) scaleX(1);
+            transition: transform 200ms ease-out 200ms;
+        }
+        .checkbox-wrapper-40 input[type=checkbox]:focus {
+            outline: calc(var(--borderWidth) / 2) dotted rgba(0, 0, 0, 0.25);
+        }
+    </style>
+
     <p>Sheets API Quickstart</p>
 
     <!--Add buttons to initiate auth sequence and sign out-->
@@ -89,7 +160,7 @@
           }
           document.getElementById('signout_button').style.visibility = 'visible';
           document.getElementById('authorize_button').innerText = 'Refresh';
-          await listMajors();
+          await generateForm();
         };
 
         if (gapi.client.getToken() === null) {
@@ -120,13 +191,13 @@
        * Print the names and majors of students in a sample spreadsheet:
        * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
        */
-      async function listMajors() {
+      async function generateForm() {
         let response;
         try {
           // Fetch first 10 files
           response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: '1YEixDdDEvC6X9KhdKOlRyhj5EfzGRvD6-Nzq_4LrTNk',
-            range: '2025!A1:S',
+            range: '2025!A1:S600',
           });
         } catch (err) {
           document.getElementById('content').innerText = err.message;
@@ -139,6 +210,44 @@
         }
 
         console.log(range);
+
+        sheet_contents = range.values;
+
+        var names = [];
+        for (var x = 1; x < sheet_contents[0].length; x+=3) {
+            names.push([sheet_contents[0][x], x]);
+        }
+
+        var html_content = "";
+
+        for (var x = 0; x < sheet_contents.length; x++){
+            if (sheet_contents[x][0] == ""){
+                break;
+            }
+
+            html_content = html_content + "<select name='quizzer' id='quizzer'>";
+            for (var y = 0; y < names.length; y++){
+                html_content = html_content + "<option value='" + names[y][1] + "'>" + names[y][0] + "</option>";
+            }
+            html_content = html_content + "</select>";
+
+            html_content = html_content + "<input type='text' id='signature' name='signature'>";
+
+            html_content = html_content + "<div style='border:solid gray 1px'>";
+            html_content = html_content + "  <div class='checkbox-wrapper-40 container' style='width:auto; grid-column-start:1; grid-row-start:1; grid-row-end:2'>";
+            html_content = html_content + "    <label>";
+            html_content = html_content + "      <input type='checkbox' id='checkbox" + x + "' name='checkbox" + x + "'/>";
+            html_content = html_content + "      <span class='checkbox'></span>";
+            html_content = html_content + "    </label>";
+            html_content = html_content + "  </div>";
+            html_content = html_content + "  <p style='grid-column-start:2;grid-row-start:1;margin:4px'>" + sheet_contents[x][0] + "</p>";
+            reference = [sheet_contents[x][0].split(" ")[0], sheet_contents[x][0].split(" ")[1].split(":")[0], sheet_contents[x][0].split(" ")[1].split(":")[1]];
+            html_content = html_content + "  <p style='grid-column-start:2;grid-row-start:2;margin:4px'>" + data[reference[0]][reference[1]][reference[2]] + "</p>";
+            html_content = html_content + "  <textarea id='textbox" + x + "' name='textbox" + x + "' rows='4' style='width:99%; margin:auto; margin:auto; grid-column-start:1; grid-row-start:3; grid-column-end:3'>";
+            html_content = html_content + "    ";
+            html_content = html_content + "  </textarea>";
+            html_content = html_content + "</div>";
+        }
 
         // Flatten to string to display
         const output = range.values.reduce(
