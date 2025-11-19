@@ -13,7 +13,7 @@ function search(){
     //if search_string empty return full data set
     if (search_string == ""){
         for (set in data){
-            console.log("set: " + set);
+            //console.log("set: " + set);
             for (book in data[set]){
                 for (chapter in data[set][book]){
                     for (verse in data[set][book][chapter]){
@@ -239,6 +239,7 @@ function set_division(){ //sets the division of competition (junior, senior)
 	}
 
     console.log("set_division");
+    sort_data();
     search();
 }
 
@@ -348,11 +349,7 @@ $(document).ready(function(){
     init_settings();
 	
 	set_division();
-
-    sort_data();
-
-    search();
-
+    
 	//////////// TEXT SEARCH FUNCTION ////////////////////
 	$("#search_field").keyup(debounce(function(e){search();}, 300));
 });
